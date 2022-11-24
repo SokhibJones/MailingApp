@@ -1,3 +1,4 @@
+using Castle.Components.DictionaryAdapter.Xml;
 using MailingApp.DataContext;
 using MailingApp.Repository;
 using MailingApp.Repository.Contracts;
@@ -17,6 +18,14 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<MessageAppDbContext>();
+    context.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
