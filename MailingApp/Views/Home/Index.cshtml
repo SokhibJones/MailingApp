@@ -1,0 +1,31 @@
+﻿@model User;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="container col-md-4 col-md-offset-4 mt-auto">
+    <div class="row">
+        <form method="post" asp-controller="Home" asp-action="Index">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group w-100">
+                    <label class="form-label" for="userName" asp-for="Name"></label>
+                    <input type="text" class="form-control" id="userName" name="userName" asp-for="Name" placeholder="Enter your username" onkeyup="return forceLower(this);" onkeypress="return event.charCode != 32" />
+                </div>
+            <button type="submit" class="btn btn-primary text-center w-100 mt-1"><i class="bi bi-door-open"></i></button>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+    <script>
+        function forceLower(strInput) {
+        strInput.value = strInput.value.toLowerCase();
+    }
+    </script>
+}

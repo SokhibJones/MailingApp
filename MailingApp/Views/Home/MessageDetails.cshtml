@@ -1,0 +1,23 @@
+﻿@model Message;
+@{
+    ViewData["Title"] = "Message details";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="card">
+            <div class="card-header lead">
+                @ViewData["messageHeader"]
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.Subject</h5>
+                <p class="card-text" style="white-space: pre-line">
+                    @Model.Body
+                </p>
+            </div>
+            <div class="card-footer">
+                Sent: @Model.SentTime.DateTime.ToLongDateString()
+            </div>
+        </div>
+    </div>
+</div>

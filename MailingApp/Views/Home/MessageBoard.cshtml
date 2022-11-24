@@ -1,0 +1,125 @@
+﻿@model MessageViewModel;
+
+@{
+    ViewData["Title"] = "Message board";
+}
+
+
+<partial name="_PopupNotification" />
+
+<div class="container">
+    <div class="row border rounded" style="padding: 2rem;">
+        <form method="post" asp-controller="Home" asp-action="SendMessage">
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label" for="from">From</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" id="from" value="@Model.Sender.Name" />
+                    <input type="hidden" name="fromUserId" value="@Model.Sender.Id" />
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label" for="toUser">To</label>
+                <div class="col-sm-10">
+                    <select class="js-example-basic-single" id="toUser" style="width: 100%" name="toUserId" onload="loadSelect2()" required>
+                        @foreach (User user in Model.Users)
+                        {
+                            @if (user.Id == Model.Sender.Id)
+                            {
+                                <option value="@user.Id" selected>@user.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@user.Id">@user.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label" for="subject">Subject</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="subject" name="subject"/>
+                </div>
+            </div>
+            <div class="form-outline">
+                <label class="form-label" for="body">Message</label>
+                <textarea class="form-control" id="body" name="messageBody" rows="7"></textarea>                
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Send Message</button>
+        </form>
+    </div>
+        
+        <div class="row mt-5">
+            <nav>
+                <div class="nav nav-pills nav-fill" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-inbox-tab" 
+                            data-bs-toggle="tab" data-bs-target="#nav-inbox" 
+                            type="button" role="tab" aria-controls="nav-inbox" aria-selected="true">
+                    Inbox</button>
+                    <button class="nav-link" id="nav-sent-tab" 
+                            data-bs-toggle="tab" data-bs-target="#nav-sent" 
+                            type="button" role="tab" aria-controls="nav-sent" aria-selected="false">
+                    Sent</button>                    
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tab-content">
+                <div class="tab-pane fade show active p-3" id="nav-inbox" role="tabpanel" aria-labelledly="nav-inbox-tab">
+                    @foreach (Message message in Model.InboxMessages)
+                    {
+                        <div class="card mb-5">
+                            <div class="card-header lead">
+                                From: @message.From.Name
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@message.Subject</h5>
+                                <p class="card-text" style="white-space: pre-line">
+                                    @if (message.Body.Length > 500)
+                                    {
+                                        @message.Body.Substring(0, 500) <span>...</span>
+                                            <a class="link-primary" asp-controller="Home" asp-action="MessageDetails" asp-route-messageId="@message.Id" asp-route-messageType="inbox">Read more</a>
+                                    }
+                                    else
+                                    {
+                                        @message.Body
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="tab-pane fade p-3" id="nav-sent" role="tabpanel" aria-labelledly="nav-sent-tab">
+                    @foreach (Message message in Model.SentMessages)
+                    {
+                        <div class="card mb-5">
+                            <div class="card-header lead">
+                                To: @message.To.Name
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@message.Subject</h5>
+                                <p class="card-text" style="white-space: pre-line">
+                                    @if (message.Body.Length > 500)
+                                    {
+                                        @message.Body.Substring(0, 500) <span>...</span>
+                                        <a class="link-primary" asp-controller="Home" asp-action="MessageDetails" asp-route-messageId="@message.Id" asp-route-messageType="sent">Read more</a>
+                                    }
+                                    else
+                                    {
+                                        @message.Body
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>                
+            </div>
+        </div>
+     </div>
+
+
+<script>
+    // In your Javascript (external .js resource or <script> tag)
+    $(document).ready(function () {
+       $('.js-example-basic-single').select2();
+    });
+</script>
